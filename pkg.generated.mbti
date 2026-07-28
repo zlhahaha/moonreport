@@ -18,13 +18,35 @@ pub fn render(SourceMap, Diagnostic, config? : RenderConfig) -> String
 
 pub fn render_all(SourceMap, Array[Diagnostic], config? : RenderConfig) -> String
 
+pub fn render_ansi(SourceMap, Diagnostic, enabled? : Bool, theme? : Theme, config? : RenderConfig) -> String
+
 pub fn render_compact(SourceMap, Diagnostic) -> String
 
 pub fn render_compact_all(SourceMap, Array[Diagnostic]) -> String
 
+pub fn strip_ansi(String) -> String
+
 // Errors
 
 // Types and methods
+pub(all) enum Color {
+  Default
+  Black
+  Red
+  Green
+  Yellow
+  Blue
+  Magenta
+  Cyan
+  White
+  BrightBlack
+  BrightRed
+  BrightYellow
+  BrightBlue
+  BrightCyan
+  BrightWhite
+} derive(Eq, @debug.Debug)
+
 pub struct Diagnostic {
   severity : Severity
   message : String
@@ -154,6 +176,21 @@ pub fn Span::length(Self) -> Int
 pub fn Span::new(Int, Int) -> Self?
 pub fn Span::start(Self) -> Int
 pub fn Span::touches(Self, Self) -> Bool
+
+pub struct Theme {
+  error : Color
+  warning : Color
+  advice : Color
+  line_number : Color
+  primary : Color
+  secondary : Color
+  note : Color
+  help : Color
+  bold_header : Bool
+} derive(Eq, @debug.Debug)
+pub fn Theme::dark() -> Self
+pub fn Theme::light() -> Self
+pub fn Theme::severity(Self, Severity) -> Color
 
 // Type aliases
 
