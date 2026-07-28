@@ -10,6 +10,41 @@ import {
 // Errors
 
 // Types and methods
+pub struct Diagnostic {
+  severity : Severity
+  message : String
+  code : String?
+  help : String?
+  notes : Array[String]
+  labels : Array[Label]
+} derive(Eq, @debug.Debug)
+pub fn Diagnostic::code(Self) -> String?
+pub fn Diagnostic::help(Self) -> String?
+pub fn Diagnostic::is_valid(Self) -> Bool
+pub fn Diagnostic::labels(Self) -> Array[Label]
+pub fn Diagnostic::message(Self) -> String
+pub fn Diagnostic::new(Severity, String) -> Self
+pub fn Diagnostic::notes(Self) -> Array[String]
+pub fn Diagnostic::primary_label(Self) -> Label?
+pub fn Diagnostic::severity(Self) -> Severity
+pub fn Diagnostic::with_code(Self, String) -> Self
+pub fn Diagnostic::with_help(Self, String) -> Self
+pub fn Diagnostic::with_label(Self, Label) -> Self
+pub fn Diagnostic::with_note(Self, String) -> Self
+
+pub struct Label {
+  source : SourceId
+  span : Span
+  message : String
+  primary : Bool
+} derive(Eq, @debug.Debug)
+pub fn Label::is_primary(Self) -> Bool
+pub fn Label::message(Self) -> String
+pub fn Label::primary(SourceId, Span, String) -> Self
+pub fn Label::secondary(SourceId, Span, String) -> Self
+pub fn Label::source(Self) -> SourceId
+pub fn Label::span(Self) -> Span
+
 pub struct Location {
   line : Int
   column : Int
@@ -18,6 +53,14 @@ pub struct Location {
 pub fn Location::column(Self) -> Int
 pub fn Location::line(Self) -> Int
 pub fn Location::offset(Self) -> Int
+
+pub(all) enum Severity {
+  Advice
+  Warning
+  Error
+} derive(Eq, @debug.Debug)
+pub fn Severity::name(Self) -> String
+pub fn Severity::rank(Self) -> Int
 
 pub struct Source {
   name : String
@@ -34,6 +77,10 @@ pub fn Source::name(Self) -> String
 pub fn Source::new(String, String) -> Self
 pub fn Source::slice(Self, Span) -> String
 pub fn Source::text(Self) -> String
+
+pub(all) struct SourceId(Int) derive(Compare, Eq, Hash, @debug.Debug)
+pub fn SourceId::new(Int) -> Self?
+pub fn SourceId::value(Self) -> Int
 
 pub struct Span {
   start : Int
