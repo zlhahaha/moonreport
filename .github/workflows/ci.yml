@@ -48,8 +48,11 @@ jobs:
       - name: Show MoonBit version
         run: moon version --all
 
-      - name: Format sources
-        run: moon fmt
+      - name: Verify MoonBit source formatting
+        shell: bash
+        run: |
+          find . -type f -name '*.mbt' -not -path './_build/*' -print0 \
+            | xargs -0 moon fmt --check
 
       - name: Check package warnings
         run: moon check --deny-warn

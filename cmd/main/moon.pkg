@@ -2,4 +2,6 @@ import {
   "zlhahaha/moonreport" @report,
 }
 
-@pkgtype(kind: "executable")
+options(
+  "is-main": true,
+)
