@@ -19,6 +19,7 @@ target/
 coverage/
 dist/
 proposal/rendered/
+output/proposal-rendered/
 proposal/*.aux
 proposal/*.log
 proposal/*.out

@@ -6,6 +6,8 @@ import {
 }
 
 // Values
+pub fn diagnostic_fingerprint(Diagnostic) -> String
+
 pub fn display_column(String, Int, config? : DisplayConfig) -> Int
 
 pub fn display_width(String, config? : DisplayConfig) -> Int
@@ -24,6 +26,10 @@ pub fn render_compact(SourceMap, Diagnostic) -> String
 
 pub fn render_compact_all(SourceMap, Array[Diagnostic]) -> String
 
+pub fn render_fix_json(FixPreview) -> String
+
+pub fn render_fix_preview(FixPreview) -> String
+
 pub fn render_json(SourceMap, Diagnostic) -> String
 
 pub fn render_json_lines(SourceMap, Array[Diagnostic]) -> String
@@ -33,6 +39,15 @@ pub fn strip_ansi(String) -> String
 // Errors
 
 // Types and methods
+pub(all) enum Applicability {
+  MachineApplicable
+  MaybeIncorrect
+  HasPlaceholders
+  Unspecified
+} derive(Eq, @debug.Debug)
+pub fn Applicability::is_automatic(Self) -> Bool
+pub fn Applicability::name(Self) -> String
+
 pub(all) enum Color {
   Default
   Black
@@ -72,6 +87,7 @@ pub fn Diagnostic::with_code(Self, String) -> Self
 pub fn Diagnostic::with_help(Self, String) -> Self
 pub fn Diagnostic::with_label(Self, Label) -> Self
 pub fn Diagnostic::with_note(Self, String) -> Self
+pub fn Diagnostic::with_severity(Self, Severity) -> Self
 
 pub struct DiagnosticBag {
   items : Array[Diagnostic]
@@ -88,6 +104,35 @@ pub fn DiagnosticBag::render_json_lines(Self, SourceMap) -> String
 pub fn DiagnosticBag::summary(Self) -> Summary
 pub fn DiagnosticBag::to_array(Self) -> Array[Diagnostic]
 
+pub struct DiagnosticPolicy {
+  minimum : Severity
+  allowed_codes : Array[String]
+  selected_codes : Array[String]
+  denied_codes : Array[String]
+  warnings_as_errors : Bool
+  deduplicate : Bool
+  advice_limit : Int?
+  warning_limit : Int?
+  error_limit : Int?
+  total_limit : Int?
+}
+pub fn DiagnosticPolicy::allow_code(Self, String) -> Self
+pub fn DiagnosticPolicy::apply(Self, DiagnosticBag) -> PolicyResult
+pub fn DiagnosticPolicy::deduplicates(Self) -> Bool
+pub fn DiagnosticPolicy::deny_code(Self, String) -> Self
+pub fn DiagnosticPolicy::limits(Self, advice? : Int?, warnings? : Int?, errors? : Int?, total? : Int?) -> Self
+pub fn DiagnosticPolicy::minimum(Self) -> Severity
+pub fn DiagnosticPolicy::new() -> Self
+pub fn DiagnosticPolicy::select_code(Self, String) -> Self
+pub fn DiagnosticPolicy::warnings_as_errors(Self) -> Bool
+pub fn DiagnosticPolicy::with_advice_limit(Self, Int) -> Self
+pub fn DiagnosticPolicy::with_deduplication(Self, Bool) -> Self
+pub fn DiagnosticPolicy::with_error_limit(Self, Int) -> Self
+pub fn DiagnosticPolicy::with_minimum(Self, Severity) -> Self
+pub fn DiagnosticPolicy::with_total_limit(Self, Int) -> Self
+pub fn DiagnosticPolicy::with_warning_limit(Self, Int) -> Self
+pub fn DiagnosticPolicy::with_warnings_as_errors(Self, Bool) -> Self
+
 pub struct DisplayConfig {
   tab_width : Int
   ambiguous_width : Int
@@ -95,6 +140,103 @@ pub struct DisplayConfig {
 pub fn DisplayConfig::default() -> Self
 pub fn DisplayConfig::new(Int, Int) -> Self
 pub fn DisplayConfig::tab_width(Self) -> Int
+
+pub struct EditPreview {
+  source : SourceId
+  source_name : String
+  span : Span
+  start : Location
+  end : Location
+  original : String
+  replacement : String
+}
+pub fn EditPreview::end(Self) -> Location
+pub fn EditPreview::is_deletion(Self) -> Bool
+pub fn EditPreview::is_insertion(Self) -> Bool
+pub fn EditPreview::original(Self) -> String
+pub fn EditPreview::replacement(Self) -> String
+pub fn EditPreview::source(Self) -> SourceId
+pub fn EditPreview::source_name(Self) -> String
+pub fn EditPreview::span(Self) -> Span
+pub fn EditPreview::start(Self) -> Location
+
+pub struct Fix {
+  title : String
+  applicability : Applicability
+  edits : Array[TextEdit]
+}
+pub fn Fix::applicability(Self) -> Applicability
+pub fn Fix::apply(Self, SourceMap) -> (SourceMap?, FixValidation)
+pub fn Fix::apply_to_source(Self, SourceMap, SourceId) -> (String?, FixValidation)
+pub fn Fix::edits(Self) -> Array[TextEdit]
+pub fn Fix::is_automatic(Self) -> Bool
+pub fn Fix::new(String, applicability? : Applicability) -> Self
+pub fn Fix::preview(Self, SourceMap) -> (FixPreview?, FixValidation)
+pub fn Fix::render_json(Self, SourceMap) -> (String?, FixValidation)
+pub fn Fix::render_preview(Self, SourceMap) -> (String?, FixValidation)
+pub fn Fix::title(Self) -> String
+pub fn Fix::validate(Self, SourceMap) -> FixValidation
+pub fn Fix::with_edit(Self, TextEdit) -> Self
+
+pub(all) enum FixMode {
+  AllFixes
+  AutomaticFixes
+} derive(Eq, @debug.Debug)
+pub fn FixMode::name(Self) -> String
+
+pub struct FixPlan {
+  fixes : Array[Fix]
+}
+pub fn FixPlan::apply(Self, SourceMap, mode? : FixMode) -> (SourceMap?, FixPlanValidation)
+pub fn FixPlan::fixes(Self) -> Array[Fix]
+pub fn FixPlan::is_empty(Self) -> Bool
+pub fn FixPlan::length(Self) -> Int
+pub fn FixPlan::new() -> Self
+pub fn FixPlan::summary(Self, mode? : FixMode) -> FixPlanSummary
+pub fn FixPlan::validate(Self, SourceMap, mode? : FixMode) -> FixPlanValidation
+pub fn FixPlan::with_fix(Self, Fix) -> Self
+
+pub struct FixPlanSummary {
+  total_fixes : Int
+  selected_fixes : Int
+  skipped_fixes : Int
+  selected_edits : Int
+}
+pub fn FixPlanSummary::selected_edits(Self) -> Int
+pub fn FixPlanSummary::selected_fixes(Self) -> Int
+pub fn FixPlanSummary::skipped_fixes(Self) -> Int
+pub fn FixPlanSummary::total_fixes(Self) -> Int
+
+pub(all) enum FixPlanValidation {
+  PlanValid
+  EmptyPlan
+  NoSelectedFixes
+  InvalidPlannedFix(Int, FixValidation)
+  ConflictingPlannedFixes(FixValidation)
+} derive(Eq, @debug.Debug)
+pub fn FixPlanValidation::is_valid(Self) -> Bool
+pub fn FixPlanValidation::message(Self) -> String
+
+pub struct FixPreview {
+  title : String
+  applicability : Applicability
+  edits : Array[EditPreview]
+}
+pub fn FixPreview::applicability(Self) -> Applicability
+pub fn FixPreview::edit_count(Self) -> Int
+pub fn FixPreview::edits(Self) -> Array[EditPreview]
+pub fn FixPreview::source_count(Self) -> Int
+pub fn FixPreview::title(Self) -> String
+
+pub(all) enum FixValidation {
+  Valid
+  Empty
+  UnknownSource(SourceId)
+  OutOfBounds(SourceId, Span, Int)
+  Overlapping(SourceId, Span, Span)
+} derive(Eq, @debug.Debug)
+pub fn FixValidation::is_valid(Self) -> Bool
+pub fn FixValidation::message(Self) -> String
 
 pub struct Label {
   source : SourceId
@@ -129,6 +271,31 @@ pub fn Location::column(Self) -> Int
 pub fn Location::line(Self) -> Int
 pub fn Location::offset(Self) -> Int
 
+pub struct PolicyResult {
+  emitted : DiagnosticBag
+  suppressed : Array[SuppressedDiagnostic]
+  summary : PolicySummary
+}
+pub fn PolicyResult::emitted(Self) -> DiagnosticBag
+pub fn PolicyResult::has_suppressed(Self) -> Bool
+pub fn PolicyResult::summary(Self) -> PolicySummary
+pub fn PolicyResult::suppressed(Self) -> Array[SuppressedDiagnostic]
+
+pub struct PolicySummary {
+  input : Int
+  emitted : Int
+  promoted : Int
+  suppressed : Int
+  duplicates : Int
+  budgeted : Int
+}
+pub fn PolicySummary::budgeted(Self) -> Int
+pub fn PolicySummary::duplicates(Self) -> Int
+pub fn PolicySummary::emitted(Self) -> Int
+pub fn PolicySummary::input(Self) -> Int
+pub fn PolicySummary::promoted(Self) -> Int
+pub fn PolicySummary::suppressed(Self) -> Int
+
 pub struct RenderConfig {
   context_lines : Int
   tab_width : Int
@@ -160,6 +327,7 @@ pub fn Source::location(Self, Int) -> Location
 pub fn Source::name(Self) -> String
 pub fn Source::new(String, String) -> Self
 pub fn Source::slice(Self, Span) -> String
+pub fn Source::slice_offsets(Self, Int, Int) -> String
 pub fn Source::text(Self) -> String
 pub fn Source::window(Self, Span, context_lines? : Int) -> LineWindow
 
@@ -206,6 +374,38 @@ pub fn Summary::errors(Self) -> Int
 pub fn Summary::has_errors(Self) -> Bool
 pub fn Summary::total(Self) -> Int
 pub fn Summary::warnings(Self) -> Int
+
+pub struct SuppressedDiagnostic {
+  diagnostic : Diagnostic
+  reason : SuppressionReason
+}
+pub fn SuppressedDiagnostic::diagnostic(Self) -> Diagnostic
+pub fn SuppressedDiagnostic::reason(Self) -> SuppressionReason
+
+pub(all) enum SuppressionReason {
+  BelowMinimum
+  CodeAllowed(String)
+  NotSelected(String)
+  Duplicate
+  SeverityBudget(Severity, Int)
+  TotalBudget(Int)
+} derive(Eq, @debug.Debug)
+pub fn SuppressionReason::message(Self) -> String
+pub fn SuppressionReason::name(Self) -> String
+
+pub struct TextEdit {
+  source : SourceId
+  span : Span
+  replacement : String
+} derive(Eq, @debug.Debug)
+pub fn TextEdit::delete(SourceId, Span) -> Self
+pub fn TextEdit::insert(SourceId, Int, String) -> Self?
+pub fn TextEdit::is_deletion(Self) -> Bool
+pub fn TextEdit::is_insertion(Self) -> Bool
+pub fn TextEdit::replace(SourceId, Span, String) -> Self
+pub fn TextEdit::replacement(Self) -> String
+pub fn TextEdit::source(Self) -> SourceId
+pub fn TextEdit::span(Self) -> Span
 
 pub struct Theme {
   error : Color

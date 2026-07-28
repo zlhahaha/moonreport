@@ -62,6 +62,56 @@ without buffering an array.
 
 - `Span` offsets and `Location::column` are zero-based byte values.
 - JSON `start_line`, `start_column`, `end_line`, and `end_column` are one-based.
+
+## Preview and apply source fixes
+
+Use `Fix` when a diagnostic can offer an exact replacement. Edits use the same
+UTF-8 byte offsets as labels. Validation happens before application, and the
+original `SourceMap` is never mutated.
+
+```moonbit
+let fix = @report.Fix::new(
+  "use the default port",
+  applicability=@report.MachineApplicable,
+).with_edit(
+  @report.TextEdit::replace(
+    id,
+    @report.Span::new(7, 12).unwrap(),
+    "8080",
+  ),
+)
+
+let (preview, preview_status) = fix.render_preview(sources)
+if preview_status.is_valid() {
+  println(preview.unwrap())
+}
+
+let (updated, apply_status) = fix.apply(sources)
+if apply_status.is_valid() {
+  println(updated.unwrap().get(id).unwrap().text())
+}
+```
+
+`render_preview` is intended for terminals and review UIs.
+`render_json` provides deterministic fields for editor extensions, CI
+annotations, and code-action services.
+
+## Apply a safe batch
+
+`FixPlan` combines independent fixes atomically. Its default
+`AutomaticFixes` mode excludes suggestions that require review:
+
+```moonbit
+let plan = @report.FixPlan::new()
+  .with_fix(first_fix)
+  .with_fix(second_fix)
+let (updated, status) = plan.apply(sources)
+```
+
+Every selected fix is validated first, then the combined edit set is checked
+again for cross-fix conflicts. If any edit is invalid or overlaps another,
+`updated` is `None` and no partial result is returned. Use `mode=AllFixes`
+only after a user has reviewed the suggestions.
 - Terminal carets use display columns, expanding tabs and treating common
   wide Unicode characters as two cells.
 - Source text is immutable after registration, so cached line indexes remain

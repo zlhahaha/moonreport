@@ -10,18 +10,18 @@ locally verifiable facts from publication steps that require external accounts.
 | Valid open-source project | Pass | Original MoonBit developer library; Apache-2.0 |
 | Ecosystem overlap | Pass with search limitation | `docs/ecosystem-survey.md`; no equivalent complete package found |
 | MoonBit is the main implementation | Pass | All runtime implementation and tests are `.mbt` |
-| Scale is meaningful | In progress | 2,114 physical MoonBit lines now; concrete 4k-5.5k acceptance roadmap |
+| Scale is meaningful | Pass | 4,113 physical MoonBit lines across library, tests, and runnable example |
 | Strict local check | Pass | `moon check --deny-warn` |
-| Format, build, and tests | Pass | `moon fmt --check`, `moon build`, 39 tests |
+| Format, build, and tests | Pass | `moon fmt --check`, `moon build`, 84 tests |
 | Runnable example | Pass | `moon run cmd/main` |
 | Cross-platform CI definition | Pass | Ubuntu and Windows matrix in `.github/workflows/ci.yml` |
 | Latest hosted CI run | Pending publication | Requires pushing the repository to GitHub |
 | Public GitHub repository | Pending publication | Planned URL is in `moon.mod` |
 | Public GitLink mirror | Pending publication | Create after GitHub publication |
 | Published on mooncakes.io | Pending publication | Publish after public repository and release validation |
-| Proposal matches repository | Pass | Proposal uses current features and labels future scope explicitly |
+| Proposal matches repository | Pass | Proposal reflects the implemented acceptance baseline |
 | Clean repository | Pass | Build, editor, environment, coverage, and render artifacts ignored |
-| Meaningful history | Pass | 13 feature-sized commits before proposal/audit commits |
+| Meaningful history | Pass | 19 feature-sized commits before documentation/final audit |
 
 ## Timing warning
 
@@ -39,5 +39,5 @@ Before declaring the entry fully eligible:
 2. verify the hosted CI matrix is green;
 3. create and synchronize the required GitLink repository;
 4. publish the package to mooncakes.io and verify its public package page;
-5. update this file and the proposal from “planned” to the actual public URLs;
+5. replace planned locations with the actual public URLs;
 6. tag the exact reviewed commit and retain the successful CI run link.

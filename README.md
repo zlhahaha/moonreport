@@ -19,6 +19,9 @@ plain-text or ANSI output without requiring a terminal or filesystem.
 - plain text, ANSI, compact, JSON, and JSON Lines renderers
 - dark/light terminal themes and ANSI stripping
 - diagnostic batches, severity summaries, filtering, and CI exit thresholds
+- atomic source fixes with overlap, bounds, and UTF-8 boundary validation
+- human-readable fix previews and stable machine-readable JSON
+- conservative batch fix plans for unattended formatter and linter workflows
 
 ## Quick start
 
@@ -46,7 +49,7 @@ moon run cmd/main
 ```
 
 See [`docs/quickstart.md`](docs/quickstart.md) for package setup, renderer
-selection, batch reporting, and output integration.
+selection, batch reporting, source fixes, and output integration.
 
 The implementation is original and released under Apache-2.0. See
 [`docs/ecosystem-survey.md`](docs/ecosystem-survey.md) for the overlap survey
@@ -62,6 +65,7 @@ gates without treating planned work as complete.
 moon check --deny-warn
 moon test
 moon fmt --check
+moon build
 moon info
 moon run cmd/main
 ```
@@ -69,3 +73,6 @@ moon run cmd/main
 The library has no runtime I/O dependency; callers decide how sources are
 loaded and where reports are sent. This keeps output deterministic across
 native, JavaScript, and WebAssembly environments.
+
+The acceptance baseline contains 4,113 physical lines of MoonBit across the
+library, tests, and runnable example, with 84 passing tests.
