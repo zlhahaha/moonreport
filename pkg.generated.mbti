@@ -24,6 +24,10 @@ pub fn render_compact(SourceMap, Diagnostic) -> String
 
 pub fn render_compact_all(SourceMap, Array[Diagnostic]) -> String
 
+pub fn render_json(SourceMap, Diagnostic) -> String
+
+pub fn render_json_lines(SourceMap, Array[Diagnostic]) -> String
+
 pub fn strip_ansi(String) -> String
 
 // Errors
