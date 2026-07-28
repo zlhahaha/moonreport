@@ -1,0 +1,57 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "zlhahaha/moonreport"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+
+// Errors
+
+// Types and methods
+pub struct Location {
+  line : Int
+  column : Int
+  offset : Int
+} derive(Eq, @debug.Debug)
+pub fn Location::column(Self) -> Int
+pub fn Location::line(Self) -> Int
+pub fn Location::offset(Self) -> Int
+
+pub struct Source {
+  name : String
+  text : String
+  bytes : Bytes
+  line_starts : Array[Int]
+}
+pub fn Source::byte_length(Self) -> Int
+pub fn Source::line_count(Self) -> Int
+pub fn Source::line_span(Self, Int) -> Span?
+pub fn Source::line_text(Self, Int) -> String?
+pub fn Source::location(Self, Int) -> Location
+pub fn Source::name(Self) -> String
+pub fn Source::new(String, String) -> Self
+pub fn Source::slice(Self, Span) -> String
+pub fn Source::text(Self) -> String
+
+pub struct Span {
+  start : Int
+  end : Int
+} derive(Eq, @debug.Debug)
+pub fn Span::at(Int) -> Self?
+pub fn Span::clamp(Self, Int) -> Self
+pub fn Span::contains(Self, Int) -> Bool
+pub fn Span::cover(Self, Self) -> Self
+pub fn Span::end(Self) -> Int
+pub fn Span::intersects(Self, Self) -> Bool
+pub fn Span::is_empty(Self) -> Bool
+pub fn Span::length(Self) -> Int
+pub fn Span::new(Int, Int) -> Self?
+pub fn Span::start(Self) -> Int
+pub fn Span::touches(Self, Self) -> Bool
+
+// Type aliases
+
+// Traits
+

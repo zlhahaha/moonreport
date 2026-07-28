@@ -19,7 +19,7 @@ repository = "https://github.com/zlhahaha/moonreport"
 
 license = "Apache-2.0"
 
-keywords = ["diagnostic", "source", "span", "compiler", "reporting"]
+keywords = [ "diagnostic", "source", "span", "compiler", "reporting" ]
 
 preferred_target = "wasm-gc"
 
