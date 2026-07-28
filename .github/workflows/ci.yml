@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: MoonBit (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Install MoonBit
+        uses: hustcer/setup-moonbit@v1
+
+      - name: Show toolchain version
+        run: moon version --all
+
+      - name: Verify formatting
+        run: moon fmt --check
+
+      - name: Check with warnings denied
+        run: moon check --deny-warn
+
+      - name: Build
+        run: moon build
+
+      - name: Test
+        run: moon test
+
+      - name: Verify public interface
+        run: moon info
+
+      - name: Run example
+        run: moon run cmd/main
