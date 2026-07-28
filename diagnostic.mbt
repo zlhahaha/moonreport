@@ -111,6 +111,14 @@ pub fn Diagnostic::with_code(self : Diagnostic, code : String) -> Diagnostic {
 }
 
 ///|
+pub fn Diagnostic::with_severity(
+  self : Diagnostic,
+  severity : Severity,
+) -> Diagnostic {
+  { ..self, severity, }
+}
+
+///|
 pub fn Diagnostic::with_help(self : Diagnostic, help : String) -> Diagnostic {
   { ..self, help: Some(help) }
 }
