@@ -1,0 +1,7 @@
+import {
+  "zlhahaha/moonreport" @report,
+}
+
+options(
+  "is-main": true,
+)
