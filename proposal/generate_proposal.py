@@ -93,8 +93,8 @@ story.extend([header, Spacer(1, 5 * mm)])
 metrics = Table(
     [[
         p("<b>项目方向</b><br/>MoonBit 开发工具基础库", metric),
-        p("<b>当前状态</b><br/>2,114 行 / 39 项测试", metric),
-        p("<b>目标规模</b><br/>4,000-5,500 行", metric),
+        p("<b>当前状态</b><br/>4,113 行 / 84 项测试", metric),
+        p("<b>目标规模</b><br/>4,000-10,000 行", metric),
         p("<b>开源协议</b><br/>Apache-2.0", metric),
     ]],
     colWidths=[44 * mm] * 4,
@@ -132,8 +132,8 @@ features = [
     ["02", "诊断模型", "错误/警告/建议、代码、帮助、备注、多文件主次标签。"],
     ["03", "多种输出", "纯文本、ANSI、紧凑文本、JSON 与 JSON Lines。"],
     ["04", "稳定布局", "上下文窗口合并、远距折叠、多行标注和确定性快照。"],
-    ["05", "批量工作流", "严重级统计、过滤、CI 失败阈值和批量渲染。"],
-    ["06", "可移植核心", "无文件系统和终端依赖，适配 native、JS 与 Wasm。"],
+    ["05", "安全修复", "结构化编辑、预览、冲突检测、JSON 和原子批量计划。"],
+    ["06", "批量与移植", "统计、过滤、CI 阈值；核心适配 native、JS 与 Wasm。"],
 ]
 feature_rows = [
     [p(f"<b>{number}</b>", metric), p(f"<b>{name}</b>"), p(description)]
@@ -168,9 +168,9 @@ bottom = Table(
             p("验收与后续计划", section),
             p(
                 "本地已通过 moon fmt --check、moon check --deny-warn、moon build、"
-                "39 项测试、moon info 和可运行配置校验示例；CI 定义 Ubuntu/Windows "
-                "双平台矩阵。0.2-0.4 将完成修复建议、布局计划、去重/预算与 SARIF 集成，"
-                "使维护代码达到 4,000-5,500 行。"
+                "84 项测试、moon info 和可运行配置校验示例；CI 定义 Ubuntu/Windows "
+                "双平台矩阵。当前 4,113 行 MoonBit 源码已达到赛题规模下限；后续可在"
+                "保持稳定 API 的前提下扩展 SARIF 与编辑器协议适配。"
             ),
         ],
         [
@@ -179,7 +179,7 @@ bottom = Table(
                 "<b>拟公开地址</b><br/>github.com/zlhahaha/moonreport<br/><br/>"
                 "<b>包名</b><br/>zlhahaha/moonreport<br/><br/>"
                 "<b>可复现命令</b><br/>moon check --deny-warn<br/>"
-                "moon test<br/>moon run cmd/main",
+                "moon build<br/>moon test<br/>moon run cmd/main",
                 small,
             ),
             Spacer(1, 3 * mm),
