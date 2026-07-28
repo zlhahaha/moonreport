@@ -1,10 +1,10 @@
-# Acceptance baseline and post-contest roadmap
+# Project status and roadmap
 
-MoonReport has reached its OSC acceptance-scale baseline: 4,113 physical
-MoonBit lines and 84 passing tests. The implemented surface is deliberately
-cohesive rather than a collection of unrelated utilities.
+MoonReport currently contains more than 4,000 physical MoonBit lines and 84
+passing tests. The implemented surface is deliberately cohesive rather than a
+collection of unrelated utilities.
 
-## Baseline delivered
+## Current capabilities
 
 - UTF-8 byte-offset indexing, source locations, CRLF, tabs, and display width;
 - primary and secondary labels, context merging, folding, and multiline spans;
@@ -13,14 +13,13 @@ cohesive rather than a collection of unrelated utilities.
 - validated atomic edits, previews, JSON interchange, and batch fix plans;
 - configuration-validator example and Ubuntu/Windows CI definition.
 
-The baseline is sufficient for parsers, configuration validators, linters,
-compilers, test frameworks, code generators, and command-line tools to share
-one diagnostic model instead of rebuilding source excerpts and error output.
+These capabilities let parsers, configuration validators, linters, compilers,
+test frameworks, code generators, and command-line tools share one diagnostic
+model instead of rebuilding source excerpts and error output.
 
-## Post-contest candidates
+## Extension candidates
 
-Future work should be driven by adopter feedback and kept outside the
-acceptance claim:
+Future work should be driven by adopter feedback:
 
 - Language Server Protocol conversion helpers;
 - terminal capability policy (`auto`, `always`, `never`);
@@ -28,4 +27,4 @@ acceptance claim:
 - randomized invariant tests for source indexing and edit application;
 - adapters for popular MoonBit parser libraries as those APIs stabilize.
 
-These are extensions, not requirements for the current 4k–10k submission.
+These are optional extensions, not requirements for using the current library.

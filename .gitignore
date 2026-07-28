@@ -20,6 +20,7 @@ coverage/
 dist/
 proposal/rendered/
 output/proposal-rendered/
+output/submission/
 proposal/*.aux
 proposal/*.log
 proposal/*.out
