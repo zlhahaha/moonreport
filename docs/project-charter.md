@@ -25,7 +25,7 @@ JavaScript targets.
 
 ## Target size
 
-The acceptance target is 4,000–10,000 effective MoonBit lines, reached through
+The acceptance target is 4,000-10,000 effective MoonBit lines, reached through
 independent production features rather than generated or duplicated code:
 source indexing, a validated diagnostic model, layout planning, annotation
 routing, renderers, themes, serialization, tests, and examples.
