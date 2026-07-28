@@ -14,6 +14,10 @@ pub fn expand_tabs(String, config? : DisplayConfig) -> String
 
 pub fn merge_windows(Array[LineWindow], gap? : Int) -> Array[LineWindow]
 
+pub fn render(SourceMap, Diagnostic, config? : RenderConfig) -> String
+
+pub fn render_all(SourceMap, Array[Diagnostic], config? : RenderConfig) -> String
+
 pub fn render_compact(SourceMap, Diagnostic) -> String
 
 pub fn render_compact_all(SourceMap, Array[Diagnostic]) -> String
@@ -83,6 +87,15 @@ pub struct Location {
 pub fn Location::column(Self) -> Int
 pub fn Location::line(Self) -> Int
 pub fn Location::offset(Self) -> Int
+
+pub struct RenderConfig {
+  context_lines : Int
+  tab_width : Int
+  show_source_name : Bool
+  show_code : Bool
+} derive(Eq, @debug.Debug)
+pub fn RenderConfig::default() -> Self
+pub fn RenderConfig::new(context_lines? : Int, tab_width? : Int, show_source_name? : Bool, show_code? : Bool) -> Self
 
 pub(all) enum Severity {
   Advice
