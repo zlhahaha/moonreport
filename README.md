@@ -19,6 +19,7 @@ plain-text or ANSI output without requiring a terminal or filesystem.
 - plain text, ANSI, compact, JSON, and JSON Lines renderers
 - dark/light terminal themes and ANSI stripping
 - diagnostic batches, severity summaries, filtering, and CI exit thresholds
+- stable diagnostic metrics grouped by severity, code, and source
 - atomic source fixes with overlap, bounds, and UTF-8 boundary validation
 - human-readable fix previews and stable machine-readable JSON
 - conservative batch fix plans for unattended formatter and linter workflows
@@ -71,4 +72,4 @@ loaded and where reports are sent. This keeps output deterministic across
 native, JavaScript, and WebAssembly environments.
 
 The current release contains more than 4,000 physical lines of MoonBit across
-the library, tests, and runnable example, with 84 passing tests.
+the library, tests, and runnable example, with 89 passing tests.
