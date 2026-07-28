@@ -3,10 +3,6 @@ name: Test
 on:
   push:
   pull_request:
-  workflow_dispatch:
-
-permissions:
-  contents: read
 
 jobs:
   verify:
@@ -28,12 +24,15 @@ jobs:
       - name: Install MoonBit (Linux)
         if: runner.os == 'Linux'
         run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc libssl-dev
           curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
           echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
 
       - name: Install MoonBit (macOS)
         if: runner.os == 'macOS'
         run: |
+          brew install gcc openssl
           curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
           echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
 
@@ -45,14 +44,21 @@ jobs:
           irm https://cli.moonbitlang.com/install/powershell.ps1 | iex
           echo "$HOME/.moon/bin" | Out-File -FilePath $env:GITHUB_PATH -Append
 
+      - name: Setup MSYS2 (Windows)
+        if: runner.os == 'Windows'
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: true
+          install: >-
+            mingw-w64-ucrt-x86_64-gcc
+            mingw-w64-ucrt-x86_64-openssl
+
       - name: Show MoonBit version
         run: moon version --all
 
-      - name: Verify MoonBit source formatting
-        shell: bash
-        run: |
-          find . -type f -name '*.mbt' -not -path './_build/*' -print0 \
-            | xargs -0 moon fmt --check
+      - name: Format sources
+        run: moon fmt
 
       - name: Check package warnings
         run: moon check --deny-warn
@@ -63,11 +69,17 @@ jobs:
       - name: Generate public interfaces
         run: moon info
 
-      - name: Verify generated files are committed
+      - name: Verify generated interfaces are committed
         run: git diff --exit-code
 
       - name: Run tests
         run: moon test --deny-warn
 
-      - name: Run CLI smoke test
+      - name: Run CLI demo
         run: moon run cmd/main
+
+      - name: Coverage summary (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          moon test --deny-warn --enable-coverage
+          moon coverage report -f summary
