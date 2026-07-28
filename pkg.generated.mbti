@@ -6,6 +6,14 @@ import {
 }
 
 // Values
+pub fn display_column(String, Int, config? : DisplayConfig) -> Int
+
+pub fn display_width(String, config? : DisplayConfig) -> Int
+
+pub fn expand_tabs(String, config? : DisplayConfig) -> String
+
+pub fn merge_windows(Array[LineWindow], gap? : Int) -> Array[LineWindow]
+
 pub fn render_compact(SourceMap, Diagnostic) -> String
 
 pub fn render_compact_all(SourceMap, Array[Diagnostic]) -> String
@@ -35,6 +43,14 @@ pub fn Diagnostic::with_help(Self, String) -> Self
 pub fn Diagnostic::with_label(Self, Label) -> Self
 pub fn Diagnostic::with_note(Self, String) -> Self
 
+pub struct DisplayConfig {
+  tab_width : Int
+  ambiguous_width : Int
+} derive(Eq, @debug.Debug)
+pub fn DisplayConfig::default() -> Self
+pub fn DisplayConfig::new(Int, Int) -> Self
+pub fn DisplayConfig::tab_width(Self) -> Int
+
 pub struct Label {
   source : SourceId
   span : Span
@@ -47,6 +63,17 @@ pub fn Label::primary(SourceId, Span, String) -> Self
 pub fn Label::secondary(SourceId, Span, String) -> Self
 pub fn Label::source(Self) -> SourceId
 pub fn Label::span(Self) -> Span
+
+pub struct LineWindow {
+  first : Int
+  last : Int
+  focus_first : Int
+  focus_last : Int
+} derive(Eq, @debug.Debug)
+pub fn LineWindow::first(Self) -> Int
+pub fn LineWindow::focus_first(Self) -> Int
+pub fn LineWindow::focus_last(Self) -> Int
+pub fn LineWindow::last(Self) -> Int
 
 pub struct Location {
   line : Int
@@ -80,6 +107,7 @@ pub fn Source::name(Self) -> String
 pub fn Source::new(String, String) -> Self
 pub fn Source::slice(Self, Span) -> String
 pub fn Source::text(Self) -> String
+pub fn Source::window(Self, Span, context_lines? : Int) -> LineWindow
 
 pub(all) struct SourceId(Int) derive(Compare, Eq, Hash, @debug.Debug)
 pub fn SourceId::new(Int) -> Self?
