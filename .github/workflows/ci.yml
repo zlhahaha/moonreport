@@ -1,8 +1,7 @@
-name: CI
+name: Test
 
 on:
   push:
-    branches: [main]
   pull_request:
   workflow_dispatch:
 
@@ -11,36 +10,61 @@ permissions:
 
 jobs:
   verify:
-    name: MoonBit (${{ matrix.os }})
+    name: Verify (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    defaults:
+      run:
+        shell: bash
+
     steps:
-      - name: Check out source
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install MoonBit
-        uses: hustcer/setup-moonbit@v1
+      - name: Install MoonBit (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
+          echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
 
-      - name: Show toolchain version
+      - name: Install MoonBit (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
+          echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
+
+      - name: Install MoonBit (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+          irm https://cli.moonbitlang.com/install/powershell.ps1 | iex
+          echo "$HOME/.moon/bin" | Out-File -FilePath $env:GITHUB_PATH -Append
+
+      - name: Show MoonBit version
         run: moon version --all
 
-      - name: Verify formatting
-        run: moon fmt --check
+      - name: Format sources
+        run: moon fmt
 
-      - name: Check with warnings denied
+      - name: Check package warnings
         run: moon check --deny-warn
 
-      - name: Build
+      - name: Moon build
         run: moon build
 
-      - name: Test
-        run: moon test
-
-      - name: Verify public interface
+      - name: Generate public interfaces
         run: moon info
 
-      - name: Run example
+      - name: Verify generated files are committed
+        run: git diff --exit-code
+
+      - name: Run tests
+        run: moon test --deny-warn
+
+      - name: Run CLI smoke test
         run: moon run cmd/main
