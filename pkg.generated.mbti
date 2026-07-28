@@ -48,6 +48,13 @@ pub(all) enum Applicability {
 pub fn Applicability::is_automatic(Self) -> Bool
 pub fn Applicability::name(Self) -> String
 
+pub struct CodeCount {
+  code : String
+  count : Int
+} derive(Eq, @debug.Debug)
+pub fn CodeCount::code(Self) -> String
+pub fn CodeCount::count(Self) -> Int
+
 pub(all) enum Color {
   Default
   Black
@@ -98,11 +105,35 @@ pub fn DiagnosticBag::exit_code(Self, fail_on? : Severity) -> Int
 pub fn DiagnosticBag::from_array(Array[Diagnostic]) -> Self
 pub fn DiagnosticBag::is_empty(Self) -> Bool
 pub fn DiagnosticBag::length(Self) -> Int
+pub fn DiagnosticBag::metrics(Self) -> DiagnosticMetrics
 pub fn DiagnosticBag::new() -> Self
 pub fn DiagnosticBag::render(Self, SourceMap, config? : RenderConfig) -> String
 pub fn DiagnosticBag::render_json_lines(Self, SourceMap) -> String
 pub fn DiagnosticBag::summary(Self) -> Summary
 pub fn DiagnosticBag::to_array(Self) -> Array[Diagnostic]
+
+pub struct DiagnosticMetrics {
+  summary : Summary
+  coded : Int
+  labels : Int
+  primary_labels : Int
+  secondary_labels : Int
+  code_counts : Array[CodeCount]
+  source_counts : Array[SourceCount]
+} derive(Eq, @debug.Debug)
+pub fn DiagnosticMetrics::code_counts(Self) -> Array[CodeCount]
+pub fn DiagnosticMetrics::coded(Self) -> Int
+pub fn DiagnosticMetrics::count_for_code(Self, String) -> Int
+pub fn DiagnosticMetrics::diagnostics_for_source(Self, SourceId) -> Int
+pub fn DiagnosticMetrics::labels(Self) -> Int
+pub fn DiagnosticMetrics::labels_for_source(Self, SourceId) -> Int
+pub fn DiagnosticMetrics::primary_labels(Self) -> Int
+pub fn DiagnosticMetrics::secondary_labels(Self) -> Int
+pub fn DiagnosticMetrics::source_counts(Self) -> Array[SourceCount]
+pub fn DiagnosticMetrics::summary(Self) -> Summary
+pub fn DiagnosticMetrics::uncoded(Self) -> Int
+pub fn DiagnosticMetrics::unique_codes(Self) -> Int
+pub fn DiagnosticMetrics::unique_sources(Self) -> Int
 
 pub struct DiagnosticPolicy {
   minimum : Severity
@@ -330,6 +361,15 @@ pub fn Source::slice(Self, Span) -> String
 pub fn Source::slice_offsets(Self, Int, Int) -> String
 pub fn Source::text(Self) -> String
 pub fn Source::window(Self, Span, context_lines? : Int) -> LineWindow
+
+pub struct SourceCount {
+  source : SourceId
+  diagnostics : Int
+  labels : Int
+} derive(Eq, @debug.Debug)
+pub fn SourceCount::diagnostics(Self) -> Int
+pub fn SourceCount::labels(Self) -> Int
+pub fn SourceCount::source(Self) -> SourceId
 
 pub(all) struct SourceId(Int) derive(Compare, Eq, Hash, @debug.Debug)
 pub fn SourceId::new(Int) -> Self?
