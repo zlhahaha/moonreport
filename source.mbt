@@ -127,6 +127,17 @@ pub fn Source::slice(self : Source, span : Span) -> String {
 }
 
 ///|
+/// Returns the source text between two byte offsets after clamping both ends.
+///
+/// This is primarily useful to consumers that assemble transformed source
+/// without exposing the source's internal UTF-8 byte buffer.
+pub fn Source::slice_offsets(self : Source, start : Int, end : Int) -> String {
+  let bounded_start = start.clamp(min=0, max=self.bytes.length())
+  let bounded_end = end.clamp(min=bounded_start, max=self.bytes.length())
+  @utf8.decode_lossy(self.bytes[bounded_start:bounded_end])
+}
+
+///|
 pub fn Source::line_text(self : Source, line : Int) -> String? {
   match self.line_span(line) {
     Some(span) => Some(self.slice(span))
