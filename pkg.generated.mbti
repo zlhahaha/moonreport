@@ -73,6 +73,21 @@ pub fn Diagnostic::with_help(Self, String) -> Self
 pub fn Diagnostic::with_label(Self, Label) -> Self
 pub fn Diagnostic::with_note(Self, String) -> Self
 
+pub struct DiagnosticBag {
+  items : Array[Diagnostic]
+}
+pub fn DiagnosticBag::add(Self, Diagnostic) -> Unit
+pub fn DiagnosticBag::at_least(Self, Severity) -> Array[Diagnostic]
+pub fn DiagnosticBag::exit_code(Self, fail_on? : Severity) -> Int
+pub fn DiagnosticBag::from_array(Array[Diagnostic]) -> Self
+pub fn DiagnosticBag::is_empty(Self) -> Bool
+pub fn DiagnosticBag::length(Self) -> Int
+pub fn DiagnosticBag::new() -> Self
+pub fn DiagnosticBag::render(Self, SourceMap, config? : RenderConfig) -> String
+pub fn DiagnosticBag::render_json_lines(Self, SourceMap) -> String
+pub fn DiagnosticBag::summary(Self) -> Summary
+pub fn DiagnosticBag::to_array(Self) -> Array[Diagnostic]
+
 pub struct DisplayConfig {
   tab_width : Int
   ambiguous_width : Int
@@ -180,6 +195,17 @@ pub fn Span::length(Self) -> Int
 pub fn Span::new(Int, Int) -> Self?
 pub fn Span::start(Self) -> Int
 pub fn Span::touches(Self, Self) -> Bool
+
+pub struct Summary {
+  advice : Int
+  warnings : Int
+  errors : Int
+} derive(Eq, @debug.Debug)
+pub fn Summary::advice(Self) -> Int
+pub fn Summary::errors(Self) -> Int
+pub fn Summary::has_errors(Self) -> Bool
+pub fn Summary::total(Self) -> Int
+pub fn Summary::warnings(Self) -> Int
 
 pub struct Theme {
   error : Color
