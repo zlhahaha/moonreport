@@ -82,6 +82,19 @@ pub(all) struct SourceId(Int) derive(Compare, Eq, Hash, @debug.Debug)
 pub fn SourceId::new(Int) -> Self?
 pub fn SourceId::value(Self) -> Int
 
+pub struct SourceMap {
+  sources : Array[Source]
+}
+pub fn SourceMap::add(Self, String, String) -> SourceId
+pub fn SourceMap::contains(Self, SourceId) -> Bool
+pub fn SourceMap::find_by_name(Self, String) -> SourceId?
+pub fn SourceMap::get(Self, SourceId) -> Source?
+pub fn SourceMap::is_empty(Self) -> Bool
+pub fn SourceMap::length(Self) -> Int
+pub fn SourceMap::new() -> Self
+pub fn SourceMap::validate(Self, Diagnostic) -> Bool
+pub fn SourceMap::validate_label(Self, Label) -> Bool
+
 pub struct Span {
   start : Int
   end : Int
